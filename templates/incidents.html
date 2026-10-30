@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block title %}Incidents{% endblock %}{% block body %}
+<div class="card"><form method="get" class="row">
+<div><label>Search</label><input name="q" value="{{args.q or ''}}" placeholder="ref, location, registration..."></div>
+<div><label>Category</label><select name="category"><option value="">All</option>{% for c in categories %}<option {{'selected' if args.category==c}}>{{c}}</option>{% endfor %}</select></div>
+<div><label>Risk</label><select name="risk_class"><option value="">All</option>{% for c in ['Low','Moderate','High','Extreme'] %}<option {{'selected' if args.risk_class==c}}>{{c}}</option>{% endfor %}</select></div>
+<div><label>Status</label><select name="status"><option value="">All</option>{% for c in statuses %}<option {{'selected' if args.status==c}}>{{c}}</option>{% endfor %}</select></div>
+<div style="align-self:end"><button>Filter</button></div></form></div>
+<div class="card" style="overflow-x:auto"><table><tr><th>Ref</th><th>Date</th><th>Category</th><th>Location</th><th>Risk</th><th>Status</th></tr>
+{% for r in rows %}<tr><td><a href="/incident/{{r.id}}">{{r.ref}}</a></td><td>{{r.occurred_at[:10]}}</td><td>{{r.category}}</td><td>{{r.location}}</td>
+<td><span class="pill {{r.risk_class}}">{{r.risk_class}} ({{r.risk_score}})</span></td><td>{{r.status}}</td></tr>
+{% else %}<tr><td colspan="6">No incidents found.</td></tr>{% endfor %}</table></div>{% endblock %}

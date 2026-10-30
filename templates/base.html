@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkyShield - {% block title %}{% endblock %}</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body>
+<header><h1>&#9992; SkyShield</h1><a href="/">Dashboard</a><a href="/report">Report incident</a>
+<a href="/incidents">All incidents</a><a href="/export.csv">Export CSV</a><a href="/seed">Load demo data</a></header>
+<main>{% with m=get_flashed_messages(with_categories=true) %}{% for c,t in m %}<div class="msg {{c}}">{{t}}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}</main></body></html>

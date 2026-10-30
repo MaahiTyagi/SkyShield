@@ -1,0 +1,37 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}{% block body %}
+<h2 style="font-size:22px">Safety &amp; Compliance Dashboard</h2>
+<div class="grid g4">
+ <div class="card kpi"><b>{{s.total}}</b><span>Total incidents</span></div>
+ <div class="card kpi"><b>{{s.kpi.high_risk}}</b><span>High / Extreme risk</span></div>
+ <div class="card kpi"><b>{{s.kpi.compliance_score}}%</b><span>Compliance score</span></div>
+ <div class="card kpi"><b>{{s.kpi.overdue_actions}}</b><span>Overdue corrective actions</span></div>
+</div>
+<div class="grid g4">
+ <div class="card kpi"><b>{{s.kpi.rca_coverage}}%</b><span>RCA coverage (high-risk)</span></div>
+ <div class="card kpi"><b>{{s.kpi.review_sla}}%</b><span>Reviewed within 72h SLA</span></div>
+ <div class="card kpi"><b>{{s.kpi.closure_rate}}%</b><span>Closure rate</span></div>
+ <div class="card kpi"><b>{{s.kpi.injuries}}</b><span>Reported injuries</span></div>
+</div>
+<div class="grid g2">
+ <div class="card"><h2>Monthly trend</h2><canvas id="c1"></canvas></div>
+ <div class="card"><h2>Risk classification</h2><canvas id="c2"></canvas></div>
+ <div class="card"><h2>Incidents by category</h2><canvas id="c3"></canvas></div>
+ <div class="card"><h2>Root-cause distribution</h2><canvas id="c4"></canvas></div>
+ <div class="card"><h2>Flight phase</h2><canvas id="c5"></canvas></div>
+ <div class="card"><h2>Workflow status</h2><canvas id="c6"></canvas></div>
+</div>
+{% if not s.total %}<div class="card">No data yet. <a href="/seed">Load demo data</a> or <a href="/report">report an incident</a>.</div>{% endif %}
+<script>
+const S={{ s|tojson }};
+const col={Low:'#22c55e',Moderate:'#eab308',High:'#f97316',Extreme:'#dc2626'};
+const pal=['#1d4ed8','#0ea5e9','#14b8a6','#84cc16','#eab308','#f97316','#ef4444','#a855f7','#64748b','#ec4899','#06b6d4','#78716c'];
+const mk=(id,type,labels,data,colors,legend)=>new Chart(document.getElementById(id),{type,
+ data:{labels,datasets:[{data,backgroundColor:colors,borderColor:'#1d4ed8',tension:.3}]},
+ options:{plugins:{legend:{display:legend}}}});
+mk('c1','line',S.trend.labels,S.trend.values,'rgba(29,78,216,.15)',false);
+mk('c2','doughnut',Object.keys(S.by_risk),Object.values(S.by_risk),Object.keys(S.by_risk).map(k=>col[k]),true);
+mk('c3','bar',Object.keys(S.by_category),Object.values(S.by_category),pal,false);
+mk('c4','pie',Object.keys(S.root_causes),Object.values(S.root_causes),pal,true);
+mk('c5','bar',Object.keys(S.by_phase),Object.values(S.by_phase),pal,false);
+mk('c6','doughnut',Object.keys(S.by_status),Object.values(S.by_status),pal,true);
+</script>{% endblock %}

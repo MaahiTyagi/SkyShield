@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block title %}{{i.ref}}{% endblock %}{% block body %}
+<div class="card"><h2>{{i.ref}} - {{i.category}} <span class="pill {{i.risk_class}}">{{i.risk_class}} risk ({{i.risk_score}})</span></h2>
+<div class="row"><div><b>Occurred:</b> {{i.occurred_at}}</div><div><b>Reported:</b> {{i.reported_at}}</div><div><b>Status:</b> {{i.status}}</div>
+<div><b>Airline:</b> {{i.airline}}</div><div><b>Aircraft:</b> {{i.aircraft_type}} {{i.registration}}</div><div><b>Flight:</b> {{i.flight_no}}</div>
+<div><b>Location:</b> {{i.location}}</div><div><b>Phase:</b> {{i.phase}}</div><div><b>Injuries:</b> {{i.injuries}}</div></div>
+<p>{{i.description}}</p>
+{% if not i.reviewed_at %}<form method="post"><input type="hidden" name="act" value="review"><button class="btn alt">Mark as reviewed</button></form>
+{% else %}<small>Reviewed at {{i.reviewed_at}}</small>{% endif %}</div>
+<div class="card"><h2>Root-cause analysis (5 Whys) &amp; corrective action</h2>
+<form method="post"><input type="hidden" name="act" value="rca">
+{% for n in range(1,6) %}<label>Why {{n}}?</label><input name="why{{n}}" value="{{r['why'~n] if r else ''}}">{% endfor %}
+<div class="row"><div><label>Primary root-cause category</label><select name="root_cause">{% for c in root_causes %}<option {{'selected' if r and r.root_cause==c}}>{{c}}</option>{% endfor %}</select></div>
+<div><label>Contributing factors</label><input name="contributing" value="{{r.contributing if r else ''}}"></div></div>
+<label>Corrective / preventive action</label><textarea name="action" rows="3">{{r.action if r else ''}}</textarea>
+<div class="row"><div><label>Owner</label><input name="owner" value="{{r.owner if r else ''}}"></div>
+<div><label>Due date</label><input type="date" name="due_date" value="{{r.due_date if r else today}}"></div>
+<div><label>Action status</label><select name="action_status">{% for s in ['Open','Done'] %}<option {{'selected' if r and r.action_status==s}}>{{s}}</option>{% endfor %}</select></div></div>
+<p><button>Save analysis</button></p></form></div>{% endblock %}

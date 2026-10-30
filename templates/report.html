@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block title %}Report{% endblock %}{% block body %}
+<div class="card"><h2>Report a safety incident</h2>
+<form method="post"><div class="row">
+<div><label>Date &amp; time of occurrence *</label><input type="datetime-local" name="occurred_at" value="{{f.occurred_at or now}}" required></div>
+<div><label>Reporter *</label><input name="reporter" value="{{f.reporter}}" required></div>
+<div><label>Airline / operator *</label><input name="airline" value="{{f.airline}}" required></div>
+<div><label>Aircraft type</label><input name="aircraft_type" value="{{f.aircraft_type}}"></div>
+<div><label>Registration</label><input name="registration" value="{{f.registration}}"></div>
+<div><label>Flight number</label><input name="flight_no" value="{{f.flight_no}}"></div>
+<div><label>Location *</label><input name="location" value="{{f.location}}" required></div>
+<div><label>Phase of flight</label><select name="phase">{% for p in phases %}<option>{{p}}</option>{% endfor %}</select></div>
+<div><label>Category</label><select name="category">{% for c in categories %}<option>{{c}}</option>{% endfor %}</select></div>
+<div><label>Injuries</label><input type="number" min="0" name="injuries" value="{{f.injuries or 0}}"></div>
+<div><label>Severity (1 negligible - 5 catastrophic)</label><select name="severity">{% for n in range(1,6) %}<option {{'selected' if f.severity==n|string}}>{{n}}</option>{% endfor %}</select></div>
+<div><label>Likelihood (1 improbable - 5 frequent)</label><select name="likelihood">{% for n in range(1,6) %}<option {{'selected' if f.likelihood==n|string}}>{{n}}</option>{% endfor %}</select></div>
+</div><label>Description *</label><textarea name="description" rows="5" required>{{f.description}}</textarea>
+<p><button>Submit report</button></p></form></div>{% endblock %}
