@@ -33,22 +33,12 @@ ROOT_CAUSES = ["Human Factors", "Maintenance", "Equipment / Design",
 STATUSES = ["Reported", "Under Review", "RCA Complete", "Closed"]
 
 app = Flask(__name__)
+
+@app.before_first_request if hasattr(app, 'before_first_request') else None
+# Ya fir simple app context mein init_db() call kar lein:
+
 with app.app_context():
-    import sqlite3
-    conn = sqlite3.connect('skyshield.db') # ya jo bhi aapka database file naam ho
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS incidents (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT,
-            category TEXT,
-            severity TEXT,
-            likelihood TEXT,
-            description TEXT
-        )
-    ''') # Aapke table ke columns ke hisaab se yahan fields ho sakti hain
-    conn.commit()
-    conn.close()
+    init_db()
 app.secret_key = "skyshield-dev-key-change-me"
 
 
